@@ -15,47 +15,40 @@ según lo visto en la sesión de Clean Code
 const ALPHABET_LENGTH = 26;
 const LETTERS = {A: 65, Z: 90, a:97 ,z:122}
 
-function isUpperCaseLetterOutOfRange(char, shift){
-  return char >= LETTERS.A && char <= LETTERS.Z && (char + shift > LETTERS.Z||char -shift < LETTERS.A);
-}
-
-function isLowerCaseOutOfRange(char, shift){
-  return char >= LETTERS.a && char <= LETTERS.z && (char + shift > LETTERS.z||char-shift < LETTERS.a);
-}
-
-function isOutOfAlphabet(char, shift){
-  return isUpperCaseLetterOutOfRange(char, shift) || isLowerCaseOutOfRange(char, shift);
+function isCaseOutOfRange(char, shift){
+  const isUpperCase = char >= LETTERS.A && char <= LETTERS.z && (char + shift > LETTERS.z||char -shift < LETTERS.A);
+  const isLowerCase = char >= LETTERS.a && char <= LETTERS.z && (char + shift > LETTERS.z||char-shift < LETTERS.a);
+  return isLowerCase || isUpperCase
 }
 
 
 function cipher(text, shift) {
-    let cipher = '';
-    let newCharToAddToCipher, shiftToApply, currentChar;
-    shift = shift % ALPHABET_LENGTH;
-
-    for (let i = 0; i < text.length; i++) {
-      currentChar = text.charCodeAt(i);
-      shiftToApply = isOutOfAlphabet(currentChar, shift)?shift - ALPHABET_LENGTH:shift;
-      newCharToAddToCipher = String.fromCharCode(currentChar + shiftToApply);
-      cipher = cipher.concat(newCharToAddToCipher);
-    }
-    return cipher;
+    return loopToReformat(text, shift)
+    
 }
   
-  function decipher(text, shift) {
-    var decipher = '';
-    let newCharToAddToDecipher, shiftToApply, currentChar;
-    shift = -shift % ALPHABET_LENGTH;
+function decipher(text, shift) {
+  return  loopToReformat(text, - shift)
+}
+  
+
+  function loopToReformat(text, shift){
+    var reformatText = '';
+    shift = shift % ALPHABET_LENGTH;
+    let currentChar,shiftToApply,newCharToAddToDecipher
     for (var i = 0; i < text.length; i++) {
       currentChar = text.charCodeAt(i);
-      shiftToApply = isOutOfAlphabet(currentChar, shift)?shift + ALPHABET_LENGTH:shift;
+      shiftToApply = isCaseOutOfRange(currentChar, shift)?shift - ALPHABET_LENGTH:shift;
       newCharToAddToDecipher = String.fromCharCode(currentChar + shiftToApply);
-      decipher = decipher.concat(newCharToAddToDecipher);
-      
+      reformatText = reformatText.concat(newCharToAddToDecipher);
     }
-    return decipher.toString();
+    return reformatText; 
   }
+
+
+
   
+
   console.assert(
     cipher('Hello World', 1) === 'Ifmmp!Xpsme',
     `${cipher('Hello World', 1)} === 'Ifmmp!Xpsme'`,
