@@ -16,8 +16,8 @@ const ALPHABET_LENGTH = 26;
 const LETTERS = {A: 65, Z: 90, a:97 ,z:122}
 
 function isCaseOutOfRange(char, shift){
-  const isUpperCase = char >= LETTERS.A && char <= LETTERS.z && (char + shift > LETTERS.z||char -shift < LETTERS.A);
-  const isLowerCase = char >= LETTERS.a && char <= LETTERS.z && (char + shift > LETTERS.z||char-shift < LETTERS.a);
+  const isUpperCase = char >= LETTERS.A && char <= LETTERS.Z && (char + shift > LETTERS.z||char - shift < LETTERS.A);
+  const isLowerCase = char >= LETTERS.a && char <= LETTERS.z && (char + shift > LETTERS.z||char - shift < LETTERS.a);
   return isLowerCase || isUpperCase
 }
 
@@ -35,12 +35,12 @@ function decipher(text, shift) {
   function loopToReformat(text, shift){
     var reformatText = '';
     shift = shift % ALPHABET_LENGTH;
-    let currentChar,shiftToApply,newCharToAddToDecipher
+    let currentChar,shiftToApply,newCharToAddToText
     for (var i = 0; i < text.length; i++) {
       currentChar = text.charCodeAt(i);
       shiftToApply = isCaseOutOfRange(currentChar, shift)?shift - ALPHABET_LENGTH:shift;
-      newCharToAddToDecipher = String.fromCharCode(currentChar + shiftToApply);
-      reformatText = reformatText.concat(newCharToAddToDecipher);
+      newCharToAddToText = String.fromCharCode(currentChar + shiftToApply);
+      reformatText = reformatText.concat(newCharToAddToText);
     }
     return reformatText; 
   }
