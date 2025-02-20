@@ -27,16 +27,18 @@ function isOutOfAlphabet(char, shift){
   return isUpperCaseLetterOutOfRange(char, shift) || isLowerCaseOutOfRange(char, shift);
 }
 
+function shiftAmount(char, shift){
+  return isOutOfAlphabet(char, shift)?shift - ALPHABET_LENGTH:shift;
+}
 
 function cipher(text, shift) {
     let cipher = '';
-    let newCharToAddToCipher, shiftToApply, currentChar;
     shift = shift % ALPHABET_LENGTH;
 
     for (let i = 0; i < text.length; i++) {
-      currentChar = text.charCodeAt(i);
-      shiftToApply = isOutOfAlphabet(currentChar, shift)?shift - ALPHABET_LENGTH:shift;
-      newCharToAddToCipher = String.fromCharCode(currentChar + shiftToApply);
+      const currentChar = text.charCodeAt(i);
+      const shiftToApply = shiftAmount(currentChar, shift);
+      const newCharToAddToCipher = String.fromCharCode(currentChar + shiftToApply);
       cipher = cipher.concat(newCharToAddToCipher);
     }
     return cipher;
