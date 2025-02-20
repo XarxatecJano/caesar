@@ -15,21 +15,23 @@ según lo visto en la sesión de Clean Code
 const ALPHABET_LENGTH = 26;
 const LETTERS = {A: 65, Z: 90, a:97 ,z:122}
 
+
 function isCaseOutOfRange(char, shift){
-  const isUpperCase = char >= LETTERS.A && char <= LETTERS.Z && (char + shift > LETTERS.Z||char -shift < LETTERS.A);
-  const isLowerCase = char >= LETTERS.a && char <= LETTERS.z && (char + shift > LETTERS.z||char-shift < LETTERS.a);
+  let isUpperCase = char >= LETTERS.A && char <= LETTERS.Z && (char + shift > LETTERS.Z||char -shift < LETTERS.A);
+  let isLowerCase = char >= LETTERS.a && char <= LETTERS.z && (char + shift > LETTERS.z||char-shift < LETTERS.a);
   return isLowerCase || isUpperCase
 }
 
+
   function caesarCipher (text, shift){
     shift = shift % ALPHABET_LENGTH;
-    let newCharToAddToCipher, shiftToApply, currentChar;
+    let newCharToCipher, shiftToApply, currentChar;
     let finalText = '';
     for (let i = 0; i < text.length; i++) {
       currentChar = text.charCodeAt(i);
       shiftToApply = isCaseOutOfRange(currentChar, shift)?shift - ALPHABET_LENGTH:shift;
-      newCharToAddToCipher = String.fromCharCode(currentChar + shiftToApply);
-      finalText = finalText.concat(newCharToAddToCipher);
+      newCharToCipher = String.fromCharCode(currentChar + shift);
+      finalText = finalText.concat(newCharToCipher);
     }
     return finalText;
   }
