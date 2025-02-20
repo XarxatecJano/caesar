@@ -15,28 +15,28 @@ según lo visto en la sesión de Clean Code
 const ALPHABET_LENGTH = 26;
 const LETTERS = {A: 65, Z: 90, a:97 ,z:122}
 
-function upperCaseToLowerCase(char){
+function upperCaseToLowerCase(char) {
   return char + LETTERS.a - LETTERS.A;
 }
 
-function isOutOfAlphabet(char, shift){
-  if (char >= LETTERS.A && char <= LETTERS.Z) {
-    char = upperCaseToLowerCase(char);
+function isOutOfAlphabet(char, shift) {
+  let charCode = char;
+  if (charCode >= LETTERS.A && charCode <= LETTERS.Z) {
+    charCode = upperCaseToLowerCase(charCode);
   }
-  return char >= LETTERS.A && char <= LETTERS.Z && (char + shift > LETTERS.Z||char -shift < LETTERS.A);
+  return charCode >= LETTERS.A && charCode <= LETTERS.Z && (charCode + shift > LETTERS.Z||charCode -shift < LETTERS.A);
 }
 
-function shiftAmount(char, shift){
+function shiftAmount(char, shift) {
   return isOutOfAlphabet(char, shift)?shift - ALPHABET_LENGTH:shift;
 }
 
 function cipher(text, shift) {
     let cipher = '';
-    shift = shift % ALPHABET_LENGTH;
-
+    const adjustedShift = shift % ALPHABET_LENGTH;
     for (let i = 0; i < text.length; i++) {
       const currentChar = text.charCodeAt(i);
-      const shiftToApply = shiftAmount(currentChar, shift);
+      const shiftToApply = shiftAmount(currentChar, adjustedShift);
       const newCharToAddToCipher = String.fromCharCode(currentChar + shiftToApply);
       cipher = cipher.concat(newCharToAddToCipher);
     }
