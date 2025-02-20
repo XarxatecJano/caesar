@@ -15,14 +15,13 @@ según lo visto en la sesión de Clean Code
 const ALPHABET_LENGTH = 26;
 const LETTERS = { A: 65, Z: 90, a: 97, z: 122 };
 
-function isLetterOutOfRange(char, shift, lowerLimit, upperLimit) {
-  return char >= lowerBound && char <= upperBound && (char + shift > upperLimit || char - shift < lowerLimit);
+function isLetterOutOfRange(char, shift, lowLimit, upLimit) {
+  return char >= lowLimit && char <= upLimit && (char + shift > upLimit || char - shift < lowLimit);
 }
 
 
 function isOutOfAlphabet(char, shift) {
-  return isLetterOutOfRange(char, shift, LETTERS.A, LETTERS.Z) || 
-         isLetterOutOfRange(char, shift, LETTERS.a, LETTERS.z);
+  return isLetterOutOfRange(char, shift, LETTERS.A, LETTERS.Z) || isLetterOutOfRange(char, shift, LETTERS.a, LETTERS.z);
 }
 
 
@@ -31,9 +30,8 @@ function caesarCipher(text, shift) {
   shift = shift % ALPHABET_LENGTH;
 
   for (let i = 0; i < text.length; i++) {
-    let currentChar = text.charCodeAt(i);
-    let shiftToApply = isOutOfAlphabet(currentChar, shift) ? shift - Math.sign(shift) * ALPHABET_LENGTH : shift;
-    result = result.concat(String.fromCharCode(currentChar + shiftToApply));
+    let shiftToApply = isOutOfAlphabet(text.charCodeAt(i), shift) ? shift - Math.sign(shift) * ALPHABET_LENGTH : shift;
+    result = result.concat(String.fromCharCode(text.charCodeAt(i) + shiftToApply));
   }
 
   return result;
