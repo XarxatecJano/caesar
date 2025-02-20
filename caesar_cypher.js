@@ -30,9 +30,8 @@ function isOutOfAlphabet(char, shift){
 
 function cipher(text, shift) {
     let cipher = '';
-    let newCharToAddToCipher, shiftToApply, currentChar;
+    let newCharToAddToCipher, shiftToApply,currentChar;
     shift = shift % ALPHABET_LENGTH;
-
     for (let i = 0; i < text.length; i++) {
       currentChar = text.charCodeAt(i);
       shiftToApply = isOutOfAlphabet(currentChar, shift)?shift - ALPHABET_LENGTH:shift;
@@ -41,21 +40,14 @@ function cipher(text, shift) {
     }
     return cipher;
 }
+function decipher(text, shift) {
+  shift = -shift;
+  return cipher(text, shift);
+}
+
   
-  function decipher(text, shift) {
-    var decipher = '';
-    let newCharToAddToDecipher, shiftToApply, currentChar;
-    shift = -shift % ALPHABET_LENGTH;
-    for (var i = 0; i < text.length; i++) {
-      currentChar = text.charCodeAt(i);
-      shiftToApply = isOutOfAlphabet(currentChar, shift)?shift + ALPHABET_LENGTH:shift;
-      newCharToAddToDecipher = String.fromCharCode(currentChar + shiftToApply);
-      decipher = decipher.concat(newCharToAddToDecipher);
-      
-    }
-    return decipher.toString();
-  }
-  
+
+
   console.assert(
     cipher('Hello World', 1) === 'Ifmmp!Xpsme',
     `${cipher('Hello World', 1)} === 'Ifmmp!Xpsme'`,
