@@ -15,47 +15,43 @@ según lo visto en la sesión de Clean Code
 const ALPHABET_LENGTH = 26;
 const LETTERS = {A: 65, Z: 90, a:97 ,z:122}
 
-function isUpperCaseLetterOutOfRange(char, shift){
-  return char >= LETTERS.A && char <= LETTERS.Z && (char + shift > LETTERS.Z||char -shift < LETTERS.A);
+function isUpperCase(char) {
+  return char >= LETTERS.A && char <= LETTERS.Z
 }
 
-function isLowerCaseOutOfRange(char, shift){
-  return char >= LETTERS.a && char <= LETTERS.z && (char + shift > LETTERS.z||char-shift < LETTERS.a);
+function isLowerCase(char) {
+  return char >= LETTERS.a && char <= LETTERS.z;
 }
 
-function isOutOfAlphabet(char, shift){
-  return isUpperCaseLetterOutOfRange(char, shift) || isLowerCaseOutOfRange(char, shift);
+
+function isOutOfAlphabet(char, shift) {
+  return isUpperCase(char) && !isUpperCase(char + shift) ||
+         isLowerCase(char) && !isLowerCase(char + shift)
 }
 
+function transformText(text, shift) {
+  textTransformed = '';
+  let CharToAdd, shiftToApply, currentChar;
+  shift = shift % ALPHABET_LENGTH;
+  for (let i = 0; i < text.length; i++) {
+    currentChar = text.charCodeAt(i);
+    shiftToApply = isOutOfAlphabet(currentChar, shift)?shift - ALPHABET_LENGTH:shift;
+    CharToAdd = String.fromCharCode(currentChar + shiftToApply);
+    textTransformed = textTransformed.concat(CharToAdd);
+  }
+  return textTransformed;
+}
 
 function cipher(text, shift) {
-    let cipher = '';
-    let newCharToAddToCipher, shiftToApply, currentChar;
-    shift = shift % ALPHABET_LENGTH;
-
-    for (let i = 0; i < text.length; i++) {
-      currentChar = text.charCodeAt(i);
-      shiftToApply = isOutOfAlphabet(currentChar, shift)?shift - ALPHABET_LENGTH:shift;
-      newCharToAddToCipher = String.fromCharCode(currentChar + shiftToApply);
-      cipher = cipher.concat(newCharToAddToCipher);
-    }
-    return cipher;
+    return transformText(text, shift);
 }
   
   function decipher(text, shift) {
-    var decipher = '';
-    let newCharToAddToDecipher, shiftToApply, currentChar;
-    shift = -shift % ALPHABET_LENGTH;
-    for (var i = 0; i < text.length; i++) {
-      currentChar = text.charCodeAt(i);
-      shiftToApply = isOutOfAlphabet(currentChar, shift)?shift + ALPHABET_LENGTH:shift;
-      newCharToAddToDecipher = String.fromCharCode(currentChar + shiftToApply);
-      decipher = decipher.concat(newCharToAddToDecipher);
-      
-    }
-    return decipher.toString();
+    return transformText(text, -shift)
   }
   
+  console.log('!'.toLowerCase())
+
   console.assert(
     cipher('Hello World', 1) === 'Ifmmp!Xpsme',
     `${cipher('Hello World', 1)} === 'Ifmmp!Xpsme'`,
