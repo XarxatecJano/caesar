@@ -15,45 +15,41 @@ según lo visto en la sesión de Clean Code
 const ALPHABET_LENGTH = 26;
 const LETTERS = {A: 65, Z: 90, a:97 ,z:122}
 
-function isUpperCaseLetterOutOfRange(char, shift){
-  return char >= LETTERS.A && char <= LETTERS.Z && (char + shift > LETTERS.Z||char -shift < LETTERS.A);
+function upperCaseToLowerCase(char) {
+  return char + LETTERS.a - LETTERS.A;
 }
 
-function isLowerCaseOutOfRange(char, shift){
-  return char >= LETTERS.a && char <= LETTERS.z && (char + shift > LETTERS.z||char-shift < LETTERS.a);
+function isOutOfAlphabet(char, shift) {
+  let charCode = char;
+  if (charCode >= LETTERS.A && charCode <= LETTERS.Z) {
+    charCode = upperCaseToLowerCase(charCode);
+  }
+  return charCode >= LETTERS.A && charCode <= LETTERS.Z && (charCode + shift > LETTERS.Z||charCode -shift < LETTERS.A);
 }
 
-function isOutOfAlphabet(char, shift){
-  return isUpperCaseLetterOutOfRange(char, shift) || isLowerCaseOutOfRange(char, shift);
+function adjustShift(char, shift) {
+  const adjustedShift = shift % ALPHABET_LENGTH;
+  return isOutOfAlphabet(char, adjustedShift)?adjustedShift - ALPHABET_LENGTH:adjustedShift;
 }
 
+function createNewChar(char, shift){
+  const shiftToApply = adjustShift(char, shift);
+  const newCharToAddToCipher = String.fromCharCode(char + shiftToApply);
+  return newCharToAddToCipher;
+}
 
 function cipher(text, shift) {
     let cipher = '';
-    let newCharToAddToCipher, shiftToApply, currentChar;
-    shift = shift % ALPHABET_LENGTH;
-
     for (let i = 0; i < text.length; i++) {
-      currentChar = text.charCodeAt(i);
-      shiftToApply = isOutOfAlphabet(currentChar, shift)?shift - ALPHABET_LENGTH:shift;
-      newCharToAddToCipher = String.fromCharCode(currentChar + shiftToApply);
+      const currentChar = text.charCodeAt(i);
+      const newCharToAddToCipher = createNewChar(currentChar, shift);
       cipher = cipher.concat(newCharToAddToCipher);
     }
     return cipher;
 }
   
   function decipher(text, shift) {
-    var decipher = '';
-    let newCharToAddToDecipher, shiftToApply, currentChar;
-    shift = -shift % ALPHABET_LENGTH;
-    for (var i = 0; i < text.length; i++) {
-      currentChar = text.charCodeAt(i);
-      shiftToApply = isOutOfAlphabet(currentChar, shift)?shift + ALPHABET_LENGTH:shift;
-      newCharToAddToDecipher = String.fromCharCode(currentChar + shiftToApply);
-      decipher = decipher.concat(newCharToAddToDecipher);
-      
-    }
-    return decipher.toString();
+    return cipher(text,-shift);
   }
   
   console.assert(
