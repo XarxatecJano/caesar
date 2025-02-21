@@ -15,41 +15,50 @@ según lo visto en la sesión de Clean Code
 const ALPHABET_LENGTH = 26;
 const LETTERS = {A: 65, Z: 90, a:97 ,z:122}
 
+function isInRange(ini,fin,char) {
+  return ini >= char >= fin 
+}
 
-function isCaseOutOfRange(char, shift){
-  let isUpperCase = char >= LETTERS.A && char <= LETTERS.Z && (char + shift > LETTERS.Z||char -shift < LETTERS.A);
-  let isLowerCase = char >= LETTERS.a && char <= LETTERS.z && (char + shift > LETTERS.z||char-shift < LETTERS.a);
-  return isLowerCase || isUpperCase
+function isUpperCase(char) {
+  return  isInRange(LETTERS.A,LETTERS.Z,char) 
+}
+
+function isLowerCase(char) {
+  return  isInRange(LETTERS.a,LETTERS.z,char) 
+}
+
+function isShiftedCharInRange(char, shift) {
+  return (isUpperCase(char) && isUpperCase(char+shift) ) || (isLowerCase(char) &&isLowerCase(char+shift))
 }
 
 
-  function caesarCipher (text, shift){
-    shift = shift % ALPHABET_LENGTH;
-    let newCharToCipher, shiftToApply, currentChar;
-    let finalText = '';
-    for (let i = 0; i < text.length; i++) {
-      currentChar = text.charCodeAt(i);
-      shiftToApply = isCaseOutOfRange(currentChar, shift)?shift - ALPHABET_LENGTH:shift;
-      newCharToCipher = String.fromCharCode(currentChar + shift);
-      finalText = finalText.concat(newCharToCipher);
-    }
-    return finalText;
+function caesarAlgorithm (text, shift){
+  shift_adjusted = shift % ALPHABET_LENGTH;
+  let charToCipher, shiftToApply, currentChar;
+  let finalText = '';
+  for (let i = 0; i < text.length; i++) {
+    currentChar = text.charCodeAt(i);
+    shiftToApply = isShiftedCharInRange(currentChar, shift_adjusted) ? shift_adjusted: shift_adjusted - ALPHABET_LENGTH;
+    charToCipher = String.fromCharCode(currentChar + shift_adjusted);
+    finalText = finalText.concat(charToCipher);
   }
+  return finalText;
+}
 
-  function cipher(text, shift) {
-    return caesarCipher(text, shift);;
-  }
+function cipher(text, shift) {
+  return shift(text, shift);;
+}
 
-  
-  function decipher(text, shift) {
-    return caesarCipher(text, -shift);;
-  }
-  
-  console.assert(
-    cipher('Hello World', 1) === 'Ifmmp!Xpsme',
-    `${cipher('Hello World', 1)} === 'Ifmmp!Xpsme'`,
-  );
-  console.assert(
-    decipher(cipher('Hello World', 3), 3) === 'Hello World',
-    `${decipher(cipher('Hello World', 3), 3)} === 'Hello World'`,
-  );
+
+function decipher(text, shift) {
+  return caesarCipher(text, -shift);;
+}
+
+console.assert(
+  cipher('Hello World', 1) === 'Ifmmp!Xpsme',
+  `${cipher('Hello World', 1)} === 'Ifmmp!Xpsme'`,
+);
+console.assert(
+  decipher(cipher('Hello World', 3), 3) === 'Hello World',
+  `${decipher(cipher('Hello World', 3), 3)} === 'Hello World'`,
+);
