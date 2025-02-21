@@ -13,43 +13,52 @@ según lo visto en la sesión de Clean Code
 */
 
 const ALPHABET_LENGTH = 26;
-const LETTERS = { A: 65, Z: 90, a: 97, z: 122 };
+const LETTERS = {A: 65, Z: 90, a:97 ,z:122}
 
-function isLetterOutOfRange(char, shift, lowLimit, upLimit) {
-  return char >= lowLimit && char <= upLimit && (char + shift > upLimit || char - shift < lowLimit);
+function isInRange(ini,fin,char) {
+  return ini >= char >= fin 
+}
+
+function isUpperCase(char) {
+  return  isInRange(LETTERS.A,LETTERS.Z,char) 
+}
+
+function isLowerCase(char) {
+  return  isInRange(LETTERS.a,LETTERS.z,char) 
+}
+
+function isShiftedCharInRange(char, shift) {
+  return (isUpperCase(char) && isUpperCase(char+shift) ) || (isLowerCase(char) &&isLowerCase(char+shift))
 }
 
 
-function isOutOfAlphabet(char, shift) {
-  return isLetterOutOfRange(char, shift, LETTERS.A, LETTERS.Z) || isLetterOutOfRange(char, shift, LETTERS.a, LETTERS.z);
-}
-
-
-function caesarCipher(text, shift) {
-  let result = '';
-  shift = shift % ALPHABET_LENGTH;
-
+function caesarCipher (text, shift){
+  shift_adjusted = shift % ALPHABET_LENGTH;
+  let charToCipher, shiftToApply, currentChar;
+  let finalText = '';
   for (let i = 0; i < text.length; i++) {
-    let shiftToApply = isOutOfAlphabet(text.charCodeAt(i), shift) ? shift - Math.sign(shift) * ALPHABET_LENGTH : shift;
-    result = result.concat(String.fromCharCode(text.charCodeAt(i) + shiftToApply));
+    currentChar = text.charCodeAt(i);
+    shiftToApply = isShiftedCharInRange(currentChar, shift_adjusted) ? shift_adjusted: shift_adjusted - ALPHABET_LENGTH;
+    charToCipher = String.fromCharCode(currentChar + shift_adjusted);
+    finalText = finalText.concat(charToCipher);
   }
-
-  return result;
+  return finalText;
 }
 
 function cipher(text, shift) {
-  return caesarCipher(text, shift);
+  return caesarCipher(text, shift);;
 }
 
+
 function decipher(text, shift) {
-  return caesarCipher(text, -shift);
+  return caesarCipher(text, -shift);;
 }
 
 console.assert(
   cipher('Hello World', 1) === 'Ifmmp!Xpsme',
-  `${cipher('Hello World', 1)} === 'Ifmmp!Xpsme'`
+  `${cipher('Hello World', 1)} === 'Ifmmp!Xpsme'`,
 );
 console.assert(
   decipher(cipher('Hello World', 3), 3) === 'Hello World',
-  `${decipher(cipher('Hello World', 3), 3)} === 'Hello World'`
+  `${decipher(cipher('Hello World', 3), 3)} === 'Hello World'`,
 );
