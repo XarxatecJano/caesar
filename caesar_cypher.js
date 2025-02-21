@@ -27,17 +27,22 @@ function isOutOfAlphabet(char, shift) {
   return charCode >= LETTERS.A && charCode <= LETTERS.Z && (charCode + shift > LETTERS.Z||charCode -shift < LETTERS.A);
 }
 
-function shiftAmount(char, shift) {
-  return isOutOfAlphabet(char, shift)?shift - ALPHABET_LENGTH:shift;
+function adjustShift(char, shift) {
+  const adjustedShift = shift % ALPHABET_LENGTH;
+  return isOutOfAlphabet(char, adjustedShift)?adjustedShift - ALPHABET_LENGTH:adjustedShift;
+}
+
+function createNewChar(char, shift){
+  const shiftToApply = adjustShift(char, shift);
+  const newCharToAddToCipher = String.fromCharCode(char + shiftToApply);
+  return newCharToAddToCipher;
 }
 
 function cipher(text, shift) {
     let cipher = '';
-    const adjustedShift = shift % ALPHABET_LENGTH;
     for (let i = 0; i < text.length; i++) {
       const currentChar = text.charCodeAt(i);
-      const shiftToApply = shiftAmount(currentChar, adjustedShift);
-      const newCharToAddToCipher = String.fromCharCode(currentChar + shiftToApply);
+      const newCharToAddToCipher = createNewChar(currentChar, shift);
       cipher = cipher.concat(newCharToAddToCipher);
     }
     return cipher;
