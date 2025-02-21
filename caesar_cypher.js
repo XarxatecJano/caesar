@@ -15,22 +15,33 @@ según lo visto en la sesión de Clean Code
 const ALPHABET_LENGTH = 26;
 const LETTERS = {A: 65, Z: 90, a:97 ,z:122}
 
-function isCaseOutOfRange(char, shift){
-  const isUpperCase = char >= LETTERS.A && char <= LETTERS.Z && (char + shift > LETTERS.Z||char - shift < LETTERS.A);
-  const isLowerCase = char >= LETTERS.a && char <= LETTERS.z && (char + shift >  LETTERS.z||char - shift < LETTERS.a);
-  return isLowerCase || isUpperCase
+
+function isInRange(ini,fin,char) {
+  return ini >= char >= fin 
+}
+
+function isUpperCase(char) {
+  return  isInRange(LETTERS.A,LETTERS.Z,char) 
+}
+
+function isLowerCase(char) {
+  return  isInRange(LETTERS.a,LETTERS.z,char) 
+}
+
+function isShiftedCharInRange(char, shift) {
+  return (isUpperCase(char) && isUpperCase(char+shift) ) || (isLowerCase(char) &&isLowerCase(char+shift))
 }
 
 function cipher(text, shift) {
-    return loopToReformat(text, shift)
+    return caesarAlgorithm(text, shift)
 }
   
 function decipher(text, shift) {
-  return  loopToReformat(text, -shift)
+  return  caesarAlgorithm(text, -shift)
 }
   
 
-function loopToReformat(text, shift){
+function caesarAlgorithm(text, shift){
   var reformatText = '';
   shift = shift % ALPHABET_LENGTH;
   let currentChar,shiftToApply,newCharToAddToText
