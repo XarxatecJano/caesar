@@ -15,52 +15,32 @@ según lo visto en la sesión de Clean Code
 const ALPHABET_LENGTH = 26;
 const LETTERS = {A: 65, Z: 90, a:97 ,z:122}
 
-function isUpperCaseLetterOutOfRange(char, shift){
-  return char >= LETTERS.A && char <= LETTERS.Z && (char + shift > LETTERS.Z||char -shift < LETTERS.A);
-}
+function charToAdd(currentChar, shift){
+  return String.fromCharCode(currentChar + shift)
+} 
 
-function isLowerCaseOutOfRange(char, shift){
-  return char >= LETTERS.a && char <= LETTERS.z && (char + shift > LETTERS.z||char-shift < LETTERS.a);
+function getNewText(text, shift){
+  let newText = '';
+  for (let i = 0; i < text.length; i++) {
+    let newChar = charToAdd(text.charCodeAt(i), shift)
+    newText = newText.concat(newChar)
+  }
+  return newText
 }
-
-function isOutOfAlphabet(char, shift){
-  return isUpperCaseLetterOutOfRange(char, shift) || isLowerCaseOutOfRange(char, shift);
-}
-
 
 function cipher(text, shift) {
-    let cipher = '';
-    let newCharToAddToCipher, shiftToApply, currentChar;
-    shift = shift % ALPHABET_LENGTH;
-
-    for (let i = 0; i < text.length; i++) {
-      currentChar = text.charCodeAt(i);
-      shiftToApply = isOutOfAlphabet(currentChar, shift)?shift - ALPHABET_LENGTH:shift;
-      newCharToAddToCipher = String.fromCharCode(currentChar + shiftToApply);
-      cipher = cipher.concat(newCharToAddToCipher);
-    }
-    return cipher;
+  return getNewText(text, shift)
 }
   
-  function decipher(text, shift) {
-    var decipher = '';
-    let newCharToAddToDecipher, shiftToApply, currentChar;
-    shift = -shift % ALPHABET_LENGTH;
-    for (var i = 0; i < text.length; i++) {
-      currentChar = text.charCodeAt(i);
-      shiftToApply = isOutOfAlphabet(currentChar, shift)?shift + ALPHABET_LENGTH:shift;
-      newCharToAddToDecipher = String.fromCharCode(currentChar + shiftToApply);
-      decipher = decipher.concat(newCharToAddToDecipher);
-      
-    }
-    return decipher.toString();
-  }
-  
-  console.assert(
-    cipher('Hello World', 1) === 'Ifmmp!Xpsme',
-    `${cipher('Hello World', 1)} === 'Ifmmp!Xpsme'`,
-  );
-  console.assert(
-    decipher(cipher('Hello World', 3), 3) === 'Hello World',
-    `${decipher(cipher('Hello World', 3), 3)} === 'Hello World'`,
-  );
+function decipher(text, shift) {
+  return getNewText(text, -shift)
+}
+
+console.assert(
+  cipher('Hello World', 1) === 'Ifmmp!Xpsme',
+  `${cipher('Hello World', 1)} === 'Ifmmp!Xpsme'`,
+);
+console.assert(
+  decipher(cipher('Hello World', 3), 3) === 'Hello World',
+  `${decipher(cipher('Hello World', 3), 3)} === 'Hello World'`,
+);
