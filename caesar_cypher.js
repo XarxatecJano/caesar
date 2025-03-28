@@ -19,48 +19,46 @@ function isUpperCaseLetterOutOfRange(char, shift){
   return char >= LETTERS.A && char <= LETTERS.Z && (char + shift > LETTERS.Z||char -shift < LETTERS.A);
 }
 
-function isLowerCaseOutOfRange(char, shift){
-  return char >= LETTERS.a && char <= LETTERS.z && (char + shift > LETTERS.z||char-shift < LETTERS.a);
+function charToAdd(currentChar, shiftToApply) {
+  return String.fromCharCode(currentChar + shiftToApply);
 }
 
-function isOutOfAlphabet(char, shift){
-  return isUpperCaseLetterOutOfRange(char, shift) || isLowerCaseOutOfRange(char, shift);
+function isEncrypted(shift) {
+  return shift < 0;
 }
 
+function calculateShift(char, shift) {
+  if (isUpperCaseLetterOutOfRange(char,shift)) {
+    return isEncrypted(shift) ?
+      shift + ALPHABET_LENGTH :
+      shift - ALPHABET_LENGTH;
+  } else {
+    return shift;
+  }
+}
 
 function cipher(text, shift) {
-    let cipher = '';
-    let newCharToAddToCipher, shiftToApply, currentChar;
-    shift = shift % ALPHABET_LENGTH;
+  let cipher = '';
+  let newCharToAddToCipher, shiftToApply, currentChar;
+  shift = shift % ALPHABET_LENGTH;
+  for (let i = 0; i < text.length; i++) {
+    currentChar = text.charCodeAt(i);
+    shiftToApply = calculateShift(currentChar,shift);
+    newCharToAddToCipher = charToAdd(currentChar,shiftToApply);
+    cipher = cipher.concat(newCharToAddToCipher);
+  }
+  return cipher;
+}
 
-    for (let i = 0; i < text.length; i++) {
-      currentChar = text.charCodeAt(i);
-      shiftToApply = isOutOfAlphabet(currentChar, shift)?shift - ALPHABET_LENGTH:shift;
-      newCharToAddToCipher = String.fromCharCode(currentChar + shiftToApply);
-      cipher = cipher.concat(newCharToAddToCipher);
-    }
-    return cipher;
+function decipher(text, shift) {
+  return cipher(text,-shift);
 }
   
-  function decipher(text, shift) {
-    var decipher = '';
-    let newCharToAddToDecipher, shiftToApply, currentChar;
-    shift = -shift % ALPHABET_LENGTH;
-    for (var i = 0; i < text.length; i++) {
-      currentChar = text.charCodeAt(i);
-      shiftToApply = isOutOfAlphabet(currentChar, shift)?shift + ALPHABET_LENGTH:shift;
-      newCharToAddToDecipher = String.fromCharCode(currentChar + shiftToApply);
-      decipher = decipher.concat(newCharToAddToDecipher);
-      
-    }
-    return decipher.toString();
-  }
-  
-  console.assert(
-    cipher('Hello World', 1) === 'Ifmmp!Xpsme',
-    `${cipher('Hello World', 1)} === 'Ifmmp!Xpsme'`,
-  );
-  console.assert(
-    decipher(cipher('Hello World', 3), 3) === 'Hello World',
-    `${decipher(cipher('Hello World', 3), 3)} === 'Hello World'`,
-  );
+console.assert(
+  cipher('Hello World', 1) === 'Ifmmp!Xpsme',
+  `${cipher('Hello World', 1)} === 'Ifmmp!Xpsme'`,
+);
+console.assert(
+  decipher(cipher('Hello World', 3), 3) === 'Hello World',
+  `${decipher(cipher('Hello World', 3), 3)} === 'Hello World'`,
+);
